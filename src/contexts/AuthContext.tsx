@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type UsuarioLogin from "../models/UsuarioLogin";
 import { login } from "../services/Service";
@@ -17,16 +17,30 @@ interface AuthProviderProps {
 export const AuthContext = createContext({} as AuthContextProps);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [usuario, setUsuario] = useState<UsuarioLogin>({
-        id: 0,
-        nome: "",
-        usuario: "",
-        senha: "",
-        foto: "",
-        token: ""
+    // 1. Tenta recuperar os dados do localStorage ao iniciar a aplicação
+    const [usuario, setUsuario] = useState<UsuarioLogin>(() => {
+        const usuarioArmazenado = localStorage.getItem('usuario');
+        if (usuarioArmazenado) {
+            return JSON.parse(usuarioArmazenado);
+        }
+        return {
+            id: 0,
+            nome: "",
+            usuario: "",
+            senha: "",
+            foto: "",
+            token: ""
+        };
     });
 
     const [isLoading, setIsLoading] = useState(false);
+
+    // 2. Sempre que o estado do 'usuario' mudar e tiver um token válido, guarda no localStorage
+    useEffect(() => {
+        if (usuario.token !== "") {
+            localStorage.setItem('usuario', JSON.stringify(usuario));
+        }
+    }, [usuario]);
 
     async function handleLogin(userLogin: UsuarioLogin) {
         setIsLoading(true);
@@ -40,6 +54,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     function handleLogout() {
+        // 3. Limpa o localStorage ao fazer logout para garantir que não ficam dados residuais
+        localStorage.removeItem('usuario');
         setUsuario({
             id: 0,
             nome: "",

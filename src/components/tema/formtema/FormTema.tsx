@@ -16,6 +16,8 @@ function FormTema() {
     const token = usuario.token;
 
     async function buscarPorId(id: string) {
+        if (token === '') return; // Trava de segurança
+
         try {
             await buscar(`/temas/${id}`, setTema, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -53,6 +55,9 @@ function FormTema() {
 
     async function gerarNovoTema(e: ChangeEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        if (token === '') return; // Trava de segurança
+
         setIsLoading(true);
 
         if (id !== undefined) {

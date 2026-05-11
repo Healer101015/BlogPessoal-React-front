@@ -15,6 +15,8 @@ function DeletarTema() {
     const token = usuario.token;
 
     async function buscarPorId(id: string) {
+        if (token === '') return; // Trava de segurança
+
         try {
             await buscar(`/temas/${id}`, setTema, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -40,6 +42,8 @@ function DeletarTema() {
     }, [id]);
 
     async function deletarTema() {
+        if (token === '') return; // Trava de segurança
+
         setIsLoading(true);
         try {
             await deletar(`/temas/${id}`, {

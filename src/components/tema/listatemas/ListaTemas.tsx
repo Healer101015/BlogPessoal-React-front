@@ -15,12 +15,18 @@ function ListaTemas() {
     const token = usuario.token;
 
     async function buscarTemas() {
+        // TRAVA DE SEGURANÇA: Só tenta buscar se tiver um token válido
+        if (token === '') {
+            return;
+        }
+
         setIsLoading(true);
         try {
             await buscar('/temas', setTemas, {
                 headers: { Authorization: `Bearer ${token}` }
             });
         } catch (error: any) {
+            console.error("Erro ao buscar temas:", error);
             if (error.toString().includes('401')) {
                 handleLogout();
             }
