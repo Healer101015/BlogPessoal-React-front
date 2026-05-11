@@ -18,7 +18,7 @@ function ListaTemas() {
         setIsLoading(true);
         try {
             await buscar('/temas', setTemas, {
-                headers: { Authorization: token }
+                headers: { Authorization: `Bearer ${token}` }
             });
         } catch (error: any) {
             if (error.toString().includes('401')) {

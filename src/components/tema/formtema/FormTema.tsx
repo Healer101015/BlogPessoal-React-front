@@ -18,7 +18,7 @@ function FormTema() {
     async function buscarPorId(id: string) {
         try {
             await buscar(`/temas/${id}`, setTema, {
-                headers: { Authorization: token }
+                headers: { Authorization: `Bearer ${token}` }
             });
         } catch (error: any) {
             if (error.toString().includes('401')) {
@@ -58,7 +58,7 @@ function FormTema() {
         if (id !== undefined) {
             try {
                 await atualizar(`/temas`, tema, setTema, {
-                    headers: { Authorization: token }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 alert('Tema atualizado com sucesso');
             } catch (error: any) {
@@ -71,7 +71,7 @@ function FormTema() {
         } else {
             try {
                 await cadastrar(`/temas`, tema, setTema, {
-                    headers: { Authorization: token }
+                    headers: { Authorization: `Bearer ${token}` }
                 });
                 alert('Tema cadastrado com sucesso');
             } catch (error: any) {

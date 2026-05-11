@@ -17,7 +17,7 @@ function DeletarTema() {
     async function buscarPorId(id: string) {
         try {
             await buscar(`/temas/${id}`, setTema, {
-                headers: { Authorization: token }
+                headers: { Authorization: `Bearer ${token}` }
             });
         } catch (error: any) {
             if (error.toString().includes('401')) {
@@ -43,7 +43,7 @@ function DeletarTema() {
         setIsLoading(true);
         try {
             await deletar(`/temas/${id}`, {
-                headers: { Authorization: token }
+                headers: { Authorization: `Bearer ${token}` }
             });
             alert('Tema apagado com sucesso');
         } catch (error: any) {
