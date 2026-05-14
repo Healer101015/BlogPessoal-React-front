@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import type UsuarioLogin from "../models/UsuarioLogin";
 import { login } from "../services/Service";
+import { ToastAlerta } from "../utils/ToastAlerta";
 
 interface AuthContextProps {
     usuario: UsuarioLogin;
@@ -17,7 +18,6 @@ interface AuthProviderProps {
 export const AuthContext = createContext({} as AuthContextProps);
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    // 1. Tenta recuperar os dados do localStorage ao iniciar a aplicação
     const [usuario, setUsuario] = useState<UsuarioLogin>(() => {
         const usuarioArmazenado = localStorage.getItem('usuario');
         if (usuarioArmazenado) {
@@ -35,7 +35,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    // 2. Sempre que o estado do 'usuario' mudar e tiver um token válido, guarda no localStorage
     useEffect(() => {
         if (usuario.token !== "") {
             localStorage.setItem('usuario', JSON.stringify(usuario));
@@ -46,15 +45,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(true);
         try {
             await login(`/usuarios/logar`, userLogin, setUsuario);
-            alert("Usuário logado com sucesso");
+            ToastAlerta("Usuário foi autenticado com sucesso!", "sucesso");
         } catch (error) {
-            alert("Dados do usuário inconsistentes!");
+            ToastAlerta("Os dados do Usuário estão inconsistentes!", "erro");
         }
         setIsLoading(false);
     }
 
     function handleLogout() {
-        // 3. Limpa o localStorage ao fazer logout para garantir que não ficam dados residuais
         localStorage.removeItem('usuario');
         setUsuario({
             id: 0,
